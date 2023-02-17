@@ -35,6 +35,7 @@ def user_login(request):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
+            return redirect('store:home')
         else:
             messages.error(request, 'user or password is invalid!!!')
     return render(request, 'store/signin.html', {})
@@ -52,10 +53,11 @@ def user_register(request):
         password = request.POST['password']
         user, created = User.objects.get_or_create(username=username)
         if created:
-            customer = Customer.objects.create(first_name=first_name, last_name=last_name, is_male=is_male)
             user.password = password
             user.save()
-            customer.user = user
+            customer = Customer.objects.create(first_name=first_name, last_name=last_name, is_male=is_male,
+                                               user_id=user.id)
+            customer.save()
             return redirect('store:user_login')
         else:
             messages.error(request, 'user already exist!!!')
