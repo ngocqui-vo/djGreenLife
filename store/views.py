@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.db import IntegrityError
 
 from .models import Category, Product, Customer
 from .forms import SignUpForm
@@ -13,6 +12,16 @@ def home(request):
     products = Product.objects.all().order_by('-created')[:8]
     context = {'products': products}
     return render(request, 'store/index.html', context)
+
+
+def search_products(request):
+    search_str = request.GET['search']
+    if search_str is not None:
+        products = Product.objects.filter(title__contains=search_str)
+    else:
+        products = Product.objects.all()
+    context = {'products': products}
+    return render(request, 'store/store.html', context)
 
 
 def all_products(request):
