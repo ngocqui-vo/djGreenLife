@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block content %}
+    {% load widget_tweaks %}
     <!-- ============================ COMPONENT REGISTER   ================================= -->
     <div class="card mx-auto" style="max-width:520px; margin-top:40px;">
         <article class="card-body">
@@ -14,17 +15,16 @@
                 <div class="form-row">
                     <div class="col form-group">
                         <label>First name</label>
-                        <input type="text" class="form-control" placeholder="" name="first_name">
+                        {{ forms.first_name }}
                     </div> <!-- form-group end.// -->
                     <div class="col form-group">
                         <label>Last name</label>
-                        <input type="text" class="form-control" placeholder="" name="last_name">
+                        {{ forms.last_name }}
                     </div> <!-- form-group end.// -->
                 </div> <!-- form-row end.// -->
                 <div class="form-group">
                     <label>Username</label>
-                    <input type="text" class="form-control" placeholder="" name="username">
-
+                    {{ forms.username }}
                 </div> <!-- form-group end.// -->
                 <div class="form-group">
                     <label class="custom-control custom-radio custom-control-inline">
@@ -40,15 +40,16 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label>Create password</label>
-                        <input class="form-control" type="password" name="password">
+                        {{ forms.password1|add_class:"form-control" }}
                     </div> <!-- form-group end.// -->
                     <div class="form-group col-md-6">
                         <label>Repeat password</label>
-                        <input class="form-control" type="password">
+                        {{ forms.password2|add_class:"form-control" }}
                     </div> <!-- form-group end.// -->
                     {% if messages %}
+
                         {% for message in messages %}
-                            <span>message</span>
+                            <span class="alert alert-danger">{{ message }}</span>
                         {% endfor %}
 
                     {% endif %}
@@ -57,6 +58,7 @@
                     <button type="submit" class="btn btn-primary btn-block"> Register</button>
                 </div> <!-- form-group// -->
 
+
             </form>
         </article><!-- card-body.// -->
     </div> <!-- card .// -->
@@ -64,6 +66,6 @@
     <br><br>
     <!-- ============================ COMPONENT REGISTER  END.// ================================= -->
 
-    {{ forms.as_div }}
+
 
 {% endblock %}

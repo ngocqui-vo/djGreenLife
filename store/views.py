@@ -1,9 +1,12 @@
+from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.db import IntegrityError
 
 from .models import Category, Product, Customer
+from .forms import SignUpForm
 
 
 def home(request):
@@ -37,7 +40,8 @@ def user_login(request):
             login(request, user)
             return redirect('store:home')
         else:
-            messages.error(request, 'user or password is invalid!!!')
+            messages.error(request, 'User or password is invalid!!!')
+            return redirect('store:user_login')
     return render(request, 'store/signin.html', {})
 
 
@@ -46,22 +50,22 @@ def user_register(request):
         return redirect('store:home')
 
     if request.method == 'POST':
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        is_male = request.POST['is_male']
-        username = request.POST['username']
-        password = request.POST['password']
-        user, created = User.objects.get_or_create(username=username)
-        if created:
-            user.password = password
-            user.save()
-            customer = Customer.objects.create(first_name=first_name, last_name=last_name, is_male=is_male,
-                                               user_id=user.id)
+        forms = SignUpForm(request.POST)
+
+        if forms.is_valid():
+            user = forms.save()
+            first_name = forms.cleaned_data.get('first_name')
+            last_name = forms.cleaned_data.get('last_name')
+            is_male = bool(int(request.POST['is_male']))
+            customer = Customer.objects.create(first_name=first_name, last_name=last_name, user=user, is_male=is_male)
             customer.save()
             return redirect('store:user_login')
         else:
-            messages.error(request, 'user already exist!!!')
-    return render(request, 'store/register.html', {})
+            messages.error(request, 'User already exist!!!')
+            return redirect('store:user_register')
+    else:
+        forms = SignUpForm()
+    return render(request, 'store/register.html', {'forms': forms})
 
 
 def user_logout(request):

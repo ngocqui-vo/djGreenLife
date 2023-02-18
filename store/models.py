@@ -9,7 +9,7 @@ class Customer(models.Model):
     is_male = models.BooleanField(default=True)
 
     def __str__(self):
-        return
+        return self.last_name
 
 
 class Category(models.Model):
