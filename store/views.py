@@ -10,22 +10,31 @@ from .forms import SignUpForm
 
 
 def home(request):
-    products = Product.objects.all().order_by('-created')[:7]
+    products = Product.objects.all().order_by('-created')[:8]
     context = {'products': products}
     return render(request, 'store/index.html', context)
+
+
+def all_products(request):
+    products = Product.objects.all().order_by('-created')
+    context = {'products': products}
+    return render(request, 'store/store.html', context)
+
+
+def category_products(request, slug):
+    category = Category.objects.get(slug=slug)
+    products = category.products.all()
+    context = {
+        'category': category,
+        'products': products
+    }
+    return render(request, 'store/store.html', context)
 
 
 def product_detail(request, slug):
     product = Product.objects.get(slug=slug)
     context = {'product': product}
     return render(request, 'store/product-detail.html', context)
-
-
-def category_products(request, category_slug):
-    category = Category.objects.get(slug=category_slug)
-    products = category.products.all()
-    context = {'products': products}
-    return render(request, 'store/store.html', context)
 
 
 def user_login(request):
