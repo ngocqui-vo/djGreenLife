@@ -46,6 +46,10 @@ def product_detail(request, slug):
     return render(request, 'store/product-detail.html', context)
 
 
+def cart(request):
+    return render(request, 'store/cart.html', {})
+
+
 def user_login(request):
     if request.user.is_authenticated:
         return redirect('store:home')

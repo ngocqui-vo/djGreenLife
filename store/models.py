@@ -42,3 +42,38 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Order(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    date_ordered = models.DateTimeField(auto_now_add=True)
+    complete = models.BooleanField(default=False, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.customer.first_name} {self.customer.last_name}'
+
+    @property
+    def get_total_items(self):
+        order_items = self.order_items.all()
+        total = sum([item.quantity for item in order_items])
+        return total
+
+    @property
+    def get_total_prices(self):
+        order_items = self.order_items.all()
+        total = sum([item.get_price for item in order_items])
+        return total
+
+
+class OrderItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, blank=True, null=True, related_name='order_items')
+    quantity = models.IntegerField(default=0, null=True, blank=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.product.title
+
+    @property
+    def get_price(self):
+        return self.product.price * self.quantity
