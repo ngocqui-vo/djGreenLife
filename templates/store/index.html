@@ -28,7 +28,7 @@
                 {% for product in products %}
                     <div class="col-md-3">
                         <div class="card card-product-grid">
-                            <a href="./product-detail.html" class="img-wrap"> <img
+                            <a href="{% url 'store:product_detail' product.slug %}" class="img-wrap"> <img
                                     src="{{ product.image.url }}">
                             </a>
                             <figcaption class="info-wrap">

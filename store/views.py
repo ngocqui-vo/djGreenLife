@@ -3,8 +3,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
+from django.core.paginator import Paginator
 
-from .models import Category, Product, Customer
+from .models import Category, Product, Customer, Order, OrderItem
 from .forms import SignUpForm
 
 
@@ -15,27 +17,41 @@ def home(request):
 
 
 def search_products(request):
-    search_str = request.GET['search']
-    if search_str is not None:
-        products = Product.objects.filter(title__contains=search_str)
+    query = request.GET.get('q')
+    if query is not None:
+        products = Product.objects.filter(title__icontains=query)
     else:
         products = Product.objects.all()
-    context = {'products': products}
+
+    paginator = Paginator(products, 3)
+    page = request.GET.get('page')
+    if page is None:
+        page = 1
+    items = paginator.get_page(page)
+    context = {
+        'products': items,
+        'query': query
+    }
     return render(request, 'store/store.html', context)
 
 
-def all_products(request):
-    products = Product.objects.all().order_by('-created')
-    context = {'products': products}
-    return render(request, 'store/store.html', context)
+# def all_products(request):
+#     products = Product.objects.all().order_by('-created')
+#     context = {'products': products}
+#     return render(request, 'store/store.html', context)
 
 
 def category_products(request, slug):
     category = Category.objects.get(slug=slug)
     products = category.products.all()
+    paginator = Paginator(products, 3)
+    page = request.GET.get('page')
+    if page is None:
+        page = 1
+    items = paginator.get_page(page)
     context = {
         'category': category,
-        'products': products
+        'products': items
     }
     return render(request, 'store/store.html', context)
 
@@ -47,7 +63,19 @@ def product_detail(request, slug):
 
 
 def cart(request):
-    return render(request, 'store/cart.html', {})
+    if request.user == 'AnonymousUser':
+        order = []
+    else:
+        customer = request.user.customer
+        order = Order.objects.get(customer=customer)
+
+    context = {'items': order.order_items.all()}
+    return render(request, 'store/cart.html', context)
+
+
+@csrf_exempt
+def add_to_cart(request, pk):
+    pass
 
 
 def user_login(request):
