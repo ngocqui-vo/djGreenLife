@@ -85,3 +85,13 @@ class OrderItem(models.Model):
     @property
     def get_price(self):
         return self.product.price * self.quantity
+
+
+class Delivery(models.Model):
+    user = models.OneToOneField(User, null=False, on_delete=models.CASCADE)
+    street = models.CharField(max_length=255)
+    description = models.CharField(max_length=255)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.street
