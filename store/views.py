@@ -1,10 +1,12 @@
+import json
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
+from django.http import HttpResponseRedirect, JsonResponse
 
 from .models import Category, Product, Customer, Order, OrderItem
 from .forms import SignUpForm
@@ -44,7 +46,7 @@ def search_products(request):
 def category_products(request, slug):
     category = Category.objects.get(slug=slug)
     products = category.products.all()
-    paginator = Paginator(products, 3)
+    paginator = Paginator(products, 6)
     page = request.GET.get('page')
     if page is None:
         page = 1
@@ -62,20 +64,56 @@ def product_detail(request, slug):
     return render(request, 'store/product-detail.html', context)
 
 
+@login_required(login_url='/login/')
 def cart(request):
-    if request.user == 'AnonymousUser':
-        order = []
-    else:
-        customer = request.user.customer
-        order = Order.objects.get(customer=customer)
+    customer = request.user.customer
+    order = Order.objects.get(customer=customer)
 
-    context = {'items': order.order_items.all()}
+    context = {
+        'items': order.order_items.all(),
+        'order': order
+    }
     return render(request, 'store/cart.html', context)
 
 
+@login_required(login_url='/login/')
+def place_order(request):
+    customer = request.user.customer
+    order = Order.objects.get(customer=customer)
+
+    context = {
+        'items': order.order_items.all(),
+        'order': order
+    }
+    return render(request, 'store/place-order.html', context)
+
+
 @csrf_exempt
-def add_to_cart(request, pk):
-    pass
+def update_item(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        product_id = data['productId']
+        action = data['action']
+        print(data)
+        customer = request.user.customer
+        product = Product.objects.get(id=product_id)
+        order, created = Order.objects.get_or_create(customer=customer)
+        order_item, created = OrderItem.objects.get_or_create(order=order, product=product)
+
+        if action == 'add':
+            order_item.quantity += 1
+        elif action == 'minus':
+            order_item.quantity -= 1
+        elif action == 'remove':
+            order_item.quantity = 0
+
+        order.save()
+        order_item.save()
+
+        if order_item.quantity <= 0:
+            order_item.delete()
+
+    return JsonResponse('item was added', safe=False)
 
 
 def user_login(request):

@@ -64,6 +64,14 @@ class Order(models.Model):
         total = sum([item.get_price for item in order_items])
         return total
 
+    @property
+    def get_tax(self):
+        return self.get_total_prices * 3 / 100
+
+    @property
+    def get_prices_with_tax(self):
+        return self.get_total_prices + self.get_tax
+
 
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True)
