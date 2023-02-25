@@ -88,9 +88,10 @@ class OrderItem(models.Model):
 
 
 class Delivery(models.Model):
-    user = models.OneToOneField(User, null=False, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=False, on_delete=models.CASCADE)
     street = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
+    is_complete = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

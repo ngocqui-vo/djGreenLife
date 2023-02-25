@@ -1,12 +1,11 @@
 import json
-from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import JsonResponse
 
 from .models import Category, Product, Customer, Order, OrderItem
 from .forms import SignUpForm
@@ -94,7 +93,6 @@ def update_item(request):
         data = json.loads(request.body)
         product_id = data['productId']
         action = data['action']
-        print(data)
         customer = request.user.customer
         product = Product.objects.get(id=product_id)
         order, created = Order.objects.get_or_create(customer=customer)
