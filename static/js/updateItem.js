@@ -4,13 +4,11 @@ for (let i = 0; i < addBtns.length; i++) {
     addBtns[i].addEventListener('click', function () {
         let productId = this.dataset.product
         let action = this.dataset.action
-        console.log('productId: ', productId)
-        console.log('action: ', action)
+
         if (user == 'AnonymousUser') {
-            console.log('user is not login!!!')
+            alert('Login is required')
         }
         else {
-            console.log('user: ', user)
             updateUserOrder(productId, action)
         }
     })

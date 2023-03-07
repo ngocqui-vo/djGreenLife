@@ -1,15 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
-
-class Customer(models.Model):
-    user = models.OneToOneField(User, null=False, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    is_male = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.last_name
+from accounts.models import Customer
 
 
 class Category(models.Model):
@@ -96,3 +87,23 @@ class Delivery(models.Model):
 
     def __str__(self):
         return self.street
+
+
+PAYMENT_STATUS_CHOICES = (
+    ('pending', 'Pending'),
+    ('completed', 'Completed'),
+    ('failed', 'Failed'),
+)
+
+
+class Payment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    payment_id = models.CharField(max_length=256)
+    status = models.CharField(max_length=10, choices=PAYMENT_STATUS_CHOICES)
+    payer_id = models.CharField(max_length=256)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.payment_id

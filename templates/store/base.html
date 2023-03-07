@@ -118,10 +118,10 @@
 
                             <div>
                                 {% if user.is_authenticated %}
-                                    <a href="{% url 'store:user_logout' %}"> Logout</a>
+                                    <a href="{% url 'accounts:user_logout' %}"> Logout</a>
                                 {% else %}
-                                    <a href="{% url 'store:user_login' %}">Sign in</a> <span class="dark-transp"> | </span>
-                                    <a href="{% url 'store:user_register' %}"> Register</a>
+                                    <a href="{% url 'accounts:user_login' %}">Sign in</a> <span class="dark-transp"> | </span>
+                                    <a href="{% url 'accounts:user_register' %}"> Register</a>
                                 {% endif %}
                             </div>
                         </div>
