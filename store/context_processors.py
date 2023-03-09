@@ -8,8 +8,12 @@ def get_categories(request):
 
 def get_cart_items(request):
     if request.user.is_authenticated:
-        customer = request.user.customer
-        order = Order.objects.get(customer=customer)
-        return {'items_count': order.get_total_items}
+        try:
+            customer = request.user.customer
+            order = Order.objects.get(customer=customer)
+            return {'items_count': order.get_total_items}
+        except Order.DoesNotExist:
+            return {'items_count': 0}
     else:
         return {'items_count': 0}
+

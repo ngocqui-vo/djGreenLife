@@ -51,4 +51,4 @@ def user_register(request):
 
 def user_logout(request):
     logout(request)
-    return redirect('store:user_login')
+    return redirect('accounts:user_login')
