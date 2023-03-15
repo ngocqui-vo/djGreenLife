@@ -33,6 +33,10 @@ def search_products(request):
     return render(request, 'store/store.html', context)
 
 
+def products_price_range(request):
+    pass
+
+
 # def all_products(request):
 #     products = Product.objects.all().order_by('-created')
 #     context = {'products': products}

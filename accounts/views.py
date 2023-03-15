@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import SignUpForm
 from .models import Customer
+from .helpers import send_forget_password_mail
 
 
 def forgot_password(request):
