@@ -10,4 +10,4 @@ def send_forget_password_mail(email):
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [email]
     send_mail(subject, message, email_from, recipient_list)
-    return True
+    return 1
