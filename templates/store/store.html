@@ -26,7 +26,9 @@
 
                                     <ul class="list-menu">
                                         {% for category in categories %}
-                                            <li><a href="{% url 'store:category_products' category.slug %}">{{ category.name }} </a></li>
+                                            <li>
+                                                <a href="{% url 'store:category_products' category.slug %}">{{ category.name }} </a>
+                                            </li>
                                         {% endfor %}
                                     </ul>
 
@@ -43,37 +45,41 @@
                                 </a>
                             </header>
                             <div class="filter-content collapse show" id="collapse_3" style="">
-                                <div class="card-body">
+                                <form method="GET" action="{% url 'store:search_products' %}">
+                                    <div class="card-body">
 
-                                    <div class="form-row">
-                                        <div class="form-group col-md-6">
-                                            <label>Min</label>
-                                            <!-- <input class="form-control" placeholder="$0" type="number"> -->
-                                            <select class="mr-2 form-control">
-                                                <option value="0">$0</option>
-                                                <option value="50">$50</option>
-                                                <option value="100">$100</option>
-                                                <option value="150">$150</option>
-                                                <option value="200">$200</option>
-                                                <option value="500">$500</option>
-                                                <option value="1000">$1000</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group text-right col-md-6">
-                                            <label>Max</label>
-                                            <select class="mr-2 form-control">
-                                                <option value="50">$50</option>
-                                                <option value="100">$100</option>
-                                                <option value="150">$150</option>
-                                                <option value="200">$200</option>
-                                                <option value="500">$500</option>
-                                                <option value="1000">$1000</option>
-                                                <option value="2000">$2000+</option>
-                                            </select>
-                                        </div>
-                                    </div> <!-- form-row.// -->
-                                    <button class="btn btn-block btn-primary">Apply</button>
-                                </div><!-- card-body.// -->
+                                        <div class="form-row">
+
+                                            <div class="form-group col-md-6">
+                                                <label>Min</label>
+                                                <!-- <input class="form-control" placeholder="$0" type="number"> -->
+                                                <select class="mr-2 form-control" name="min">
+                                                    <option value="0">$0</option>
+                                                    <option value="50">$50</option>
+                                                    <option value="100">$100</option>
+                                                    <option value="150">$150</option>
+                                                    <option value="200">$200</option>
+                                                    <option value="500">$500</option>
+                                                    <option value="1000">$1000</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group text-right col-md-6">
+                                                <label>Max</label>
+                                                <select class="mr-2 form-control" name="max">
+                                                    <option value="50">$50</option>
+                                                    <option value="100">$100</option>
+                                                    <option value="150">$150</option>
+                                                    <option value="200">$200</option>
+                                                    <option value="500">$500</option>
+                                                    <option value="1000">$1000</option>
+                                                    <option value="2000">$2000+</option>
+                                                </select>
+                                            </div>
+
+                                        </div> <!-- form-row.// -->
+                                        <button class="btn btn-block btn-primary">Apply</button>
+                                    </div><!-- card-body.// -->
+                                </form>
                             </div>
                         </article> <!-- filter-group .// -->
 
@@ -100,13 +106,17 @@
                                     </div> <!-- img-wrap.// -->
                                     <figcaption class="info-wrap">
                                         <div class="fix-height">
-                                            <a href="{% url 'store:product_detail' product.slug %}" class="title">{{ product.title }}</a>
+                                            <a href="{% url 'store:product_detail' product.slug %}"
+                                               class="title">{{ product.title }}</a>
                                             <div class="price-wrap mt-2">
                                                 <span class="price">${{ product.price }}</span>
                                                 {#<del class="price-old">$1980</del>#}
                                             </div> <!-- price-wrap.// -->
                                         </div>
-                                        <button href="{% url 'store:update_item' %}" class="btn btn-block btn-success update-cart" data-product="{{ product.id }}" data-action="add">Added to cart </button>
+                                        <button href="{% url 'store:update_item' %}"
+                                                class="btn btn-block btn-success update-cart"
+                                                data-product="{{ product.id }}" data-action="add">Added to cart
+                                        </button>
                                     </figcaption>
                                 </figure>
                             </div> <!-- col.// -->
@@ -120,19 +130,27 @@
                         <ul class="pagination">
                             {% if products.has_previous %}
 
-                                <li class="page-item"><a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}page={{ products.previous_page_number }}">Previous</a></li>
+                                <li class="page-item"><a class="page-link"
+                                                         href="?{% if query %}q={{ query }}&{% endif %}page={{ products.previous_page_number }}">Previous</a>
+                                </li>
                             {% endif %}
 
                             {% for page in products.paginator.page_range %}
                                 {% if products.number == page %}
-                                    <li class="page-item active"><a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}page={{ page }}">{{ page }}</a></li>
+                                    <li class="page-item active"><a class="page-link"
+                                                                    href="?{% if query %}q={{ query }}&{% endif %}page={{ page }}">{{ page }}</a>
+                                    </li>
                                 {% else %}
-                                    <li class="page-item"><a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}page={{ page }}">{{ page }}</a></li>
+                                    <li class="page-item"><a class="page-link"
+                                                             href="?{% if query %}q={{ query }}&{% endif %}page={{ page }}">{{ page }}</a>
+                                    </li>
                                 {% endif %}
                             {% endfor %}
 
                             {% if products.has_next %}
-                                <li class="page-item"><a class="page-link" href="?{% if query %}q={{ query }}&{% endif %}page={{ products.next_page_number }}">Next</a></li>
+                                <li class="page-item"><a class="page-link"
+                                                         href="?{% if query %}q={{ query }}&{% endif %}page={{ products.next_page_number }}">Next</a>
+                                </li>
                             {% endif %}
 
                         </ul>

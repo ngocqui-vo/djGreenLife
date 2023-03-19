@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+from django.db.models import Q
 
 from .models import Category, Product, Customer, Order, OrderItem
 
@@ -16,8 +17,12 @@ def home(request):
 
 def search_products(request):
     query = request.GET.get('q')
+    min_price = request.GET.get('min')
+    max_price = request.GET.get('max')
     if query is not None:
         products = Product.objects.filter(title__icontains=query)
+    elif min_price and max_price is not None:
+        products = Product.objects.filter(Q(price__gte=min_price) & Q(price__lte=max_price))
     else:
         products = Product.objects.all()
 
