@@ -23,6 +23,10 @@
                     </div> <!-- form-group end.// -->
                 </div> <!-- form-row end.// -->
                 <div class="form-group">
+                    <label>Email</label>
+                    {{ forms.email }}
+                </div> <!-- form-group end.// -->
+                <div class="form-group">
                     <label>Username</label>
                     {{ forms.username }}
                 </div> <!-- form-group end.// -->
@@ -62,7 +66,7 @@
             </form>
         </article><!-- card-body.// -->
     </div> <!-- card .// -->
-    <p class="text-center mt-4">Have an account? <a href="">Log In</a></p>
+    <p class="text-center mt-4">Have an account? <a href="{% url 'user_login' %}">Log In</a></p>
     <br><br>
     <!-- ============================ COMPONENT REGISTER  END.// ================================= -->
 

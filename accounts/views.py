@@ -3,11 +3,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import SignUpForm
 from .models import Customer
-from .helpers import send_forget_password_mail
-
-
-def forgot_password(request):
-    return render(request, 'accounts/forgot-password.html', {})
 
 
 def user_login(request):
@@ -23,7 +18,7 @@ def user_login(request):
             return redirect('store:home')
         else:
             messages.error(request, 'User or password is invalid!!!')
-            return redirect('accounts:user_login')
+            return redirect('user_login')
     return render(request, 'accounts/signin.html', {})
 
 
@@ -38,13 +33,14 @@ def user_register(request):
             user = forms.save()
             first_name = forms.cleaned_data.get('first_name')
             last_name = forms.cleaned_data.get('last_name')
+            email = forms.cleaned_data.get('email')
             is_male = bool(int(request.POST['is_male']))
-            customer = Customer.objects.create(first_name=first_name, last_name=last_name, user=user, is_male=is_male)
+            customer = Customer.objects.create(first_name=first_name, last_name=last_name, email=email, user=user, is_male=is_male)
             customer.save()
-            return redirect('accounts:user_login')
+            return redirect('user_login')
         else:
             messages.error(request, 'User already exist!!!')
-            return redirect('accounts:user_register')
+            return redirect('user_register')
     else:
         forms = SignUpForm()
     return render(request, 'accounts/register.html', {'forms': forms})
@@ -52,4 +48,4 @@ def user_register(request):
 
 def user_logout(request):
     logout(request)
-    return redirect('accounts:user_login')
+    return redirect('user_login')
